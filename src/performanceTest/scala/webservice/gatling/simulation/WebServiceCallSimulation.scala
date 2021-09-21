@@ -1,8 +1,8 @@
-package webservice.gatling.simulation;
+package webservice.gatling.simulation
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-
+import scala.language.postfixOps
 import scala.concurrent.duration._
 
 class WebServiceCallSimulation extends Simulation {

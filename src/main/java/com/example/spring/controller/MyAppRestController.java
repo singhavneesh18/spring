@@ -14,7 +14,7 @@ public class MyAppRestController {
 
     @GetMapping("/api/getName")
     public Greeting getName() {
-        log.info("Request received....");
+//        log.info("Request received....");
         return new Greeting("Hello new World number: " +new Random().nextInt(1000));
     }
 }

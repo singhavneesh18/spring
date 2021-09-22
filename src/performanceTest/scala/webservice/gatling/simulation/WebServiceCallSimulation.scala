@@ -2,41 +2,44 @@ package webservice.gatling.simulation
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-import scala.language.postfixOps
+import io.gatling.http.protocol.HttpProtocolBuilder
 import scala.concurrent.duration._
+
+
 
 class WebServiceCallSimulation extends Simulation {
 
-    val rampUpTimeSecs = 5
-    val testTimeSecs = 20
-    val noOfUsers = 10
-    val minWaitMs = 1000 milliseconds
-    val maxWaitMs = 3000 milliseconds
+  val rampUpTimeSecs = 5
+  val testTimeSecs = 20
+  val noOfUsers = 100
+  val minWaitMs = 1000 milliseconds
+  val maxWaitMs = 3000 milliseconds
 
-    val baseURL = "http://localhost:8080"
-    val baseName = "webservice-call-greeting"
-    val requestName = baseName + "-request"
-    val scenarioName = baseName + "-scenario"
-    val URI = "/api/getName"
+  val baseURL = "http://localhost:8080"
+  val baseName = "webservice-call-greeting"
+  val requestName = baseName + "-request"
+  val scenarioName = baseName + "-scenario"
+  val URI = "/api/getName"
 
-    val httpConf = http
-            .baseURL(baseURL)
-            .acceptHeader("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8") // 6
-            .doNotTrackHeader("1")
-            .acceptLanguageHeader("en-US,en;q=0.5")
-            .acceptEncodingHeader("gzip, deflate")
-            .userAgentHeader("Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0")
+  val httpConf: HttpProtocolBuilder = http.baseUrl(baseURL)
 
-    val scn = scenario(scenarioName)
-            .during(testTimeSecs) {
-        exec(
-                http(requestName)
-                        .get(URI)
-                        .check(status.is(200))
-        ).pause(minWaitMs, maxWaitMs)
-    }
+  val new_scn = scenario("NEW_SCN")
+    .exec(
+      http("new scneario exec")
+        .get("/api/getName")
+        .check(status.is(200))
+    )
 
-    setUp(
-            scn.inject(rampUsers(noOfUsers) over (rampUpTimeSecs))
-            ).protocols(httpConf)
+  setUp(
+    new_scn.inject(
+      nothingFor(4 seconds),
+      atOnceUsers(noOfUsers),
+      rampUsers(noOfUsers) during(5 seconds),
+      constantUsersPerSec(noOfUsers) during(15 seconds),
+      constantUsersPerSec(noOfUsers) during(15 seconds) randomized,
+      rampUsersPerSec(noOfUsers) to 100 during(1 minutes),
+      rampUsersPerSec(noOfUsers) to 100 during(1 minutes) randomized,
+      heavisideUsers(1000) during(20 seconds)
+    )
+  ).protocols(httpConf)
 }

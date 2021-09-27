@@ -1,6 +1,7 @@
 plugins {
     id 'org.springframework.boot' version '2.5.4'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'com.github.sherter.google-java-format' version '0.9'
     id 'java'
     id 'scala'
 }
@@ -29,7 +30,7 @@ dependencies {
 test {
     useJUnitPlatform()
 }
-
+assemble.dependsOn ":googleJavaFormat"
 sourceSets {
     performanceTest {
         scala {

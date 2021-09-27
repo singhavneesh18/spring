@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class Greeting {
-    private String message;
+  private String message;
 }

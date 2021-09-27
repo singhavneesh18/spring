@@ -3,8 +3,8 @@ package webservice.gatling.simulation
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import io.gatling.http.protocol.HttpProtocolBuilder
-import scala.concurrent.duration._
 
+import scala.concurrent.duration._
 
 
 class WebServiceCallSimulation extends Simulation {
@@ -34,12 +34,18 @@ class WebServiceCallSimulation extends Simulation {
     new_scn.inject(
       nothingFor(4 seconds),
       atOnceUsers(noOfUsers),
-      rampUsers(noOfUsers) during(5 seconds),
-      constantUsersPerSec(noOfUsers) during(15 seconds),
-      constantUsersPerSec(noOfUsers) during(15 seconds) randomized,
-      rampUsersPerSec(noOfUsers) to 100 during(1 minutes),
-      rampUsersPerSec(noOfUsers) to 100 during(1 minutes) randomized,
-      heavisideUsers(1000) during(20 seconds)
+      rampUsers(noOfUsers) during (5 seconds),
+      constantUsersPerSec(noOfUsers) during (15 seconds),
+      constantUsersPerSec(noOfUsers) during (15 seconds) randomized,
+      rampUsersPerSec(noOfUsers) to 100 during (1 minutes),
+      rampUsersPerSec(noOfUsers) to 100 during (1 minutes) randomized,
+      heavisideUsers(1000) during (20 seconds)
+    ),
+
+    //For 200 TPS
+    new_scn.inject(
+      nothingFor(10 seconds),
+      constantUsersPerSec(200) during (1 minutes)
     )
   ).protocols(httpConf)
 }
